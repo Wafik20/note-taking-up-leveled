@@ -1,0 +1,14 @@
+[
+  {
+    "email": "naran27640@dxirl.com",
+    "password": "password123",
+    "note_title": "Test Note A",
+    "note_content": "Content for Note A"
+  },
+  {
+    "email": "une94sib1d@qejjyl.com",
+    "password": "password456",
+    "note_title": "Test Note B",
+    "note_content": "Content for Note B"
+  }
+]

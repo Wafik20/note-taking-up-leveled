@@ -1,0 +1,222 @@
+{
+	"info": {
+		"_postman_id": "2c060143-681e-484f-9d24-884f0f83f16b",
+		"name": "Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28689327"
+	},
+	"item": [
+		{
+			"name": "reg user a",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 - Created\", () => {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{userA_email}}\",\n  \"password\": \"{{userA_password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}/api/auth/register"
+			},
+			"response": []
+		},
+		{
+			"name": "reg user b",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 - Created\", () => {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							pm.test("User B ID is saved", () => {
+							"    const response = pm.response.json();",
+							"    pm.environment.set("userB_id", response.session.user.id);",
+							"    pm.expect(response.session.user.id).to.be.a('string');",
+							"});
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{userB_email}}\",\n  \"password\": \"{{userB_password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}/api/auth/register"
+			},
+			"response": []
+		},
+		{
+			"name": "login a",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - OK\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Access token for User A is saved\", () => {",
+							"  const response = pm.response.json();",
+							"  console.log(\"Login response:\", response);",
+							"",
+							"  // Assert response has a session property",
+							"  pm.expect(response).to.have.property('session');",
+							"",
+							"  // Assert session has a nested session property",
+							"  pm.expect(response.session).to.have.property('session');",
+							"",
+							"  // Assert access_token exists inside the nested session",
+							"  pm.expect(response.session.session).to.have.property('access_token');",
+							"",
+							"  // Assert access_token is a string",
+							"  pm.expect(response.session.session.access_token).to.be.a('string');",
+							"",
+							"  // Save token to environment",
+							"  pm.environment.set(\"userA_jwt\", response.session.session.access_token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{userA_email}}\",\n  \"password\": \"{{userA_password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}/api/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "login b",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - OK\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Access token for User B is saved\", () => {",
+							"  const response = pm.response.json();",
+							"  console.log(\"Login response:\", response);",
+							"",
+							"  // Check the session object exists",
+							"  pm.expect(response).to.have.property('session');",
+							"  pm.expect(response.session).to.have.property('session');",
+							"",
+							"  // Check the nested session contains an access_token",
+							"  pm.expect(response.session.session).to.have.property('access_token');",
+							"  pm.expect(response.session.session.access_token).to.be.a('string');",
+							"",
+							"  // Save token to environment",
+							"  pm.environment.set(\"userB_jwt\", response.session.session.access_token);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{userB_email}}\",\n  \"password\": \"{{userB_password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}/api/auth/login"
+			},
+			"response": []
+		}
+	]
+}

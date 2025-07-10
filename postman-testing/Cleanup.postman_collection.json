@@ -1,0 +1,34 @@
+{
+	"info": {
+		"_postman_id": "c1d8a1b1-0e1b-4a3a-8a0a-9a8b9a7a6a5c",
+		"name": "Cleanup",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Delete Note",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{userA_jwt}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/notes/{{note_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"notes",
+						"{{note_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

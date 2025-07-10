@@ -10,9 +10,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// All routes are now prefixed with /api by Vercel's routing
-app.use('/auth', authRouter);
-app.use('/notes', notesRouter);
+app.get('/api', (req, res) => {
+  res.status(200).json({ message: 'API is running' });
+});
+
+app.get('/api/ping', (req, res) => {
+  res.status(200).json({ message: 'pong' });
+});
+
+// Route handlers
+app.use('/api/auth', authRouter);
+app.use('/api/notes', notesRouter);
 
 app.get('/', (req, res) => {
   res.send('Express on Vercel');
