@@ -44,14 +44,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseURL}}/api/notes",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"notes"
-					]
+					"raw": "{{baseURL}}/api/notes"
 				}
 			},
 			"response": []
@@ -68,14 +61,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseURL}}/api/notes",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"notes"
-					]
+					"raw": "{{baseURL}}/api/notes"
 				}
 			},
 			"response": []
@@ -92,15 +78,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseURL}}/api/notes/{{note_id}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"notes",
-						"{{note_id}}"
-					]
+					"raw": "{{baseURL}}/api/notes/{{note_id}}"
 				}
 			},
 			"response": []
@@ -126,15 +104,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseURL}}/api/notes/{{note_id}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"notes",
-						"{{note_id}}"
-					]
+					"raw": "{{baseURL}}/api/notes/{{note_id}}"
 				}
 			},
 			"response": []
@@ -151,15 +121,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseURL}}/api/notes/{{note_id}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"notes",
-						"{{note_id}}"
-					]
+					"raw": "{{baseURL}}/api/notes/{{note_id}}"
 				}
 			},
 			"response": []

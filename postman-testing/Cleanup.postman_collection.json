@@ -17,15 +17,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseURL}}/api/notes/{{note_id}}",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"api",
-						"notes",
-						"{{note_id}}"
-					]
+					"raw": "{{baseURL}}/api/notes/{{note_id}}"
 				}
 			},
 			"response": []
