@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.50.5",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
