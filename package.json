@@ -2,9 +2,9 @@
   "name": "note-taking-up-leveled",
   "version": "1.0.0",
   "description": "Cross Platform Note Taking App.",
-  "main": "src/index.js",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "vercel dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
