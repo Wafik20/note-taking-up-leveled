@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/router';
-import { supabase } from '../../utils/supabaseClient';
 import NoteCard from '../../components/NoteCard';
 import styles from '../../styles/Home.module.css';
 
@@ -19,26 +18,37 @@ export default function Notes() {
   }, [user]);
 
   const fetchNotes = async () => {
-    const { data, error } = await supabase
-      .from('notes')
-      .select('*')
-      .eq('user_id', user.id);
-    if (error) {
-      console.error('Error fetching notes:', error);
-    } else {
+    const token = localStorage.getItem('token');
+    const response = await fetch('/api/notes', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
       setNotes(data);
+    } else {
+      console.error('Error fetching notes:', await response.text());
     }
   };
 
   const createNewNote = async () => {
-    const { data, error } = await supabase
-      .from('notes')
-      .insert({ title: 'New Note', content: '', user_id: user.id })
-      .single();
-    if (error) {
-      console.error('Error creating note:', error);
-    } else {
+    const token = localStorage.getItem('token');
+    const response = await fetch('/api/notes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title: 'New Note', content: '' }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
       router.push(`/notes/${data.id}`);
+    } else {
+      console.error('Error creating note:', await response.text());
     }
   };
 
