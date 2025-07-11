@@ -1,16 +1,13 @@
 {
-  "name": "note-taking-up-leveled",
-  "version": "1.0.0",
-  "description": "Cross Platform Note Taking App.",
+  "name": "note-taking-app",
   "private": true,
   "workspaces": [
     "apps/*"
   ],
   "scripts": {
-    "start": "vercel dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npm run dev --workspace=apps/web & npm run dev --workspace=apps/api",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "devDependencies": {}
 }

@@ -20,7 +20,7 @@ export default function Notes() {
   const fetchNotes = async () => {
     const token = localStorage.getItem('token');
     console.log(`notes/index.js: token from localStorage: ${token}`);
-    const response = await fetch('/api/notes', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -38,7 +38,7 @@ export default function Notes() {
 
   const createNewNote = async () => {
     const token = localStorage.getItem('token');
-    const response = await fetch('/api/notes', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

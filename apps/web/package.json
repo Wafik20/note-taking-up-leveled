@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
-    "start": "next start"
+    "dev": "dotenv -e ../../.env -- next dev",
+    "start": "dotenv -e ../../.env -- next start"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.5",

@@ -24,7 +24,7 @@ export default function NotePage() {
 
   const fetchNote = async () => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`/api/notes/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -42,7 +42,7 @@ export default function NotePage() {
 
   const saveNote = async () => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`/api/notes/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ export default function NotePage() {
 
   const deleteNote = async () => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`/api/notes/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,

@@ -10,14 +10,14 @@ export default function Navbar() {
       <ul>
         <li>
           <Link href="/">
-            <a>Home</a>
+            Home
           </Link>
         </li>
         {user ? (
           <>
             <li>
               <Link href="/notes">
-                <a>Notes</a>
+                Notes
               </Link>
             </li>
             <li>
@@ -28,12 +28,12 @@ export default function Navbar() {
           <>
             <li>
               <Link href="/login">
-                <a>Login</a>
+                Login
               </Link>
             </li>
             <li>
               <Link href="/register">
-                <a>Register</a>
+                Register
               </Link>
             </li>
           </>
