@@ -8,8 +8,9 @@ export default function Home() {
   useEffect(() => {
     async function checkApi() {
       try {
-        // The API is proxied by Vercel, so we can use a relative path.
-        const apiUrl = '/api/ping';
+        console.log("checking api...");
+        console.log(process.env.API_PORT);
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/ping`;
         const res = await fetch(apiUrl);
         const data = await res.json();
         setApiResponse(`API response: "${data.message}"`);
