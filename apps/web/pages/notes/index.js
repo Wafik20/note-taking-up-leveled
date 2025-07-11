@@ -60,7 +60,9 @@ export default function Notes() {
     <div className={styles.container}>
       <main>
         <h1 className={styles.title}>Your Notes</h1>
-        <button onClick={() => setIsModalOpen(true)}>Create New Note</button>
+        <div className={styles.buttonContainer}>
+          <button onClick={() => setIsModalOpen(true)}>Create New Note</button>
+        </div>
         <CreateNoteModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}

@@ -80,16 +80,17 @@ export default function NotePage() {
 
   return (
     <div className={styles.container}>
-      <main>
+      <main className={styles.noteContainer}>
         <h1 className={styles.title}>{note.title}</h1>
         <textarea
+          className={styles.textarea}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          rows="10"
-          cols="50"
         />
-        <button onClick={saveNote}>Save</button>
-        <button onClick={deleteNote}>Delete</button>
+        <div className={styles.buttonGroup}>
+          <button onClick={saveNote}>Save</button>
+          <button onClick={deleteNote}>Delete</button>
+        </div>
       </main>
     </div>
   );
