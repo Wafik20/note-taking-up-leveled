@@ -19,6 +19,7 @@ export default function Notes() {
 
   const fetchNotes = async () => {
     const token = localStorage.getItem('token');
+    console.log(`notes/index.js: token from localStorage: ${token}`);
     const response = await fetch('/api/notes', {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -29,7 +30,9 @@ export default function Notes() {
       const data = await response.json();
       setNotes(data);
     } else {
-      console.error('Error fetching notes:', await response.text());
+      console.log('notes/index.js: Error response from /api/notes');
+      const errorText = await response.text();
+      console.error('Error fetching notes:', errorText);
     }
   };
 

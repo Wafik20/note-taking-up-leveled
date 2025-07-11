@@ -26,8 +26,13 @@ export function AuthProvider({ children }) {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error);
+      const errorText = await response.text();
+      try {
+        const errorJson = JSON.parse(errorText);
+        throw new Error(errorJson.error || 'An unknown error occurred.');
+      } catch (e) {
+        throw new Error(errorText || 'An unknown error occurred.');
+      }
     }
     return response.json();
   };
@@ -40,14 +45,23 @@ export function AuthProvider({ children }) {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error);
+      const errorText = await response.text();
+      try {
+        const errorJson = JSON.parse(errorText);
+        throw new Error(errorJson.error || 'An unknown error occurred.');
+      } catch (e) {
+        throw new Error(errorText || 'An unknown error occurred.');
+      }
     }
 
     const { session } = await response.json();
-    localStorage.setItem('token', session.access_token);
-    setUser({ loggedIn: true }); // Or you could store more user info from the response
-    router.push('/notes');
+    if (session && session.access_token) {
+      localStorage.setItem('token', session.access_token);
+      setUser({ loggedIn: true });
+      router.push('/notes');
+    } else {
+      console.error("AuthContext: No access_token in session");
+    }
   };
 
   const signOut = () => {

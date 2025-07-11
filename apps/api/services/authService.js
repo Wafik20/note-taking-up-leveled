@@ -24,7 +24,7 @@ async function login(email, password) {
     throw new Error(error.message);
   }
 
-  return data;
+  return data.session;
 }
 
 module.exports = {
