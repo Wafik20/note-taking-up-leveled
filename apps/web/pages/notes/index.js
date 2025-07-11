@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/router';
 import NoteCard from '../../components/NoteCard';
+import CreateNoteModal from '../../components/CreateNoteModal';
 import styles from '../../styles/Home.module.css';
 
 export default function Notes() {
   const { user } = useAuth();
   const router = useRouter();
   const [notes, setNotes] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -19,7 +21,6 @@ export default function Notes() {
 
   const fetchNotes = async () => {
     const token = localStorage.getItem('token');
-    console.log(`notes/index.js: token from localStorage: ${token}`);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -30,13 +31,11 @@ export default function Notes() {
       const data = await response.json();
       setNotes(data);
     } else {
-      console.log('notes/index.js: Error response from /api/notes');
-      const errorText = await response.text();
-      console.error('Error fetching notes:', errorText);
+      console.error('Error fetching notes:', await response.text());
     }
   };
 
-  const createNewNote = async () => {
+  const handleCreateNote = async (title) => {
     const token = localStorage.getItem('token');
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
       method: 'POST',
@@ -44,11 +43,13 @@ export default function Notes() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({ title: 'New Note', content: '' }),
+      body: JSON.stringify({ title, content: '' }),
     });
 
     if (response.ok) {
       const data = await response.json();
+      setIsModalOpen(false);
+      fetchNotes();
       router.push(`/notes/${data.id}`);
     } else {
       console.error('Error creating note:', await response.text());
@@ -59,7 +60,12 @@ export default function Notes() {
     <div className={styles.container}>
       <main>
         <h1 className={styles.title}>Your Notes</h1>
-        <button onClick={createNewNote}>Create New Note</button>
+        <button onClick={() => setIsModalOpen(true)}>Create New Note</button>
+        <CreateNoteModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onCreate={handleCreateNote}
+        />
         <div className={styles.grid}>
           {notes.map((note) => (
             <NoteCard key={note.id} note={note} />
