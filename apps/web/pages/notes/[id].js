@@ -12,8 +12,10 @@ export default function NotePage() {
   const { id } = router.query;
   const [note, setNote] = useState(null);
   const [content, setContent] = useState('');
+  const [savedContent, setSavedContent] = useState('');
   const { showNotification } = useNotification();
   const previewRef = useRef(null);
+  const [mode, setMode] = useState('edit'); // 'edit' or 'preview'
 
   // Load MathJax with config for $...$ and $$...$$
   useEffect(() => {
@@ -57,6 +59,7 @@ export default function NotePage() {
       const data = await response.json();
       setNote(data);
       setContent(data.content);
+      setSavedContent(data.content);
     } else {
       console.error('Error fetching note:', await response.text());
       router.push('/notes');
@@ -76,6 +79,7 @@ export default function NotePage() {
 
     if (response.ok) {
       showNotification('Note saved!', 'success');
+      setSavedContent(content);
     } else {
       console.error('Error updating note:', await response.text());
     }
@@ -100,7 +104,8 @@ export default function NotePage() {
   // Render markdown and typeset math
   useEffect(() => {
     if (previewRef.current) {
-      previewRef.current.innerHTML = marked.parse(content || '');
+      const toRender = mode === 'preview' ? savedContent : content;
+      previewRef.current.innerHTML = marked.parse(toRender || '');
       // Wait for MathJax to be ready, then typeset
       function typeset() {
         if (window.MathJax && window.MathJax.typesetPromise) {
@@ -111,7 +116,9 @@ export default function NotePage() {
       }
       typeset();
     }
-  }, [content]);
+  }, [content, savedContent, mode]);
+
+  const hasUnsavedChanges = content !== savedContent;
 
   if (!note) {
     return <LoadingSpinner text="Loading note..." />;
@@ -122,19 +129,66 @@ export default function NotePage() {
       <div className={styles.noteCardContainer}>
         <main className={styles.noteContainer}>
           <h1 className={styles.title}>{note.title}</h1>
-          <div className={styles.markdownEditorLayout}>
-            <textarea
-              className={styles.markdownEditor}
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              placeholder="Write your markdown (with $math$) here..."
-            />
-            <div className={styles.markdownPreview} ref={previewRef} />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '1400px', marginBottom: '1.2rem' }}>
+            <button
+              style={{
+                background: mode === 'edit' ? 'var(--primary)' : '#f4f6fa',
+                color: mode === 'edit' ? '#fff' : 'var(--primary)',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.5rem 1.5rem',
+                fontWeight: 600,
+                fontSize: '1.05rem',
+                marginRight: '0.7rem',
+                cursor: 'pointer',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
+                outline: 'none',
+                transition: 'background 0.18s, color 0.18s',
+              }}
+              onClick={() => setMode('edit')}
+              disabled={mode === 'edit'}
+            >
+              Edit
+            </button>
+            <button
+              style={{
+                background: mode === 'preview' ? 'var(--primary)' : '#f4f6fa',
+                color: mode === 'preview' ? '#fff' : 'var(--primary)',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.5rem 1.5rem',
+                fontWeight: 600,
+                fontSize: '1.05rem',
+                cursor: 'pointer',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
+                outline: 'none',
+                transition: 'background 0.18s, color 0.18s',
+              }}
+              onClick={() => setMode('preview')}
+              disabled={mode === 'preview'}
+            >
+              Preview
+            </button>
           </div>
-          <div className={styles.buttonGroup}>
-            <button onClick={saveNote}>Save</button>
-            <button onClick={deleteNote}>Delete</button>
-          </div>
+          {mode === 'edit' ? (
+            <>
+              <div className={styles.markdownEditorLayout}>
+                <textarea
+                  className={styles.markdownEditor}
+                  value={content}
+                  onChange={e => setContent(e.target.value)}
+                  placeholder="Write your markdown (with $math$) here..."
+                />
+                <div className={styles.markdownPreview} ref={previewRef} />
+              </div>
+              <div className={styles.buttonGroup}>
+                <button onClick={saveNote} disabled={!hasUnsavedChanges}>Save</button>
+                <button onClick={deleteNote}>Delete</button>
+              </div>
+            </>
+          ) : (
+            <div className={styles.a4Preview} ref={previewRef} />
+          )}
         </main>
       </div>
     </div>

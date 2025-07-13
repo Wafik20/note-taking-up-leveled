@@ -319,6 +319,15 @@
   transform: translateY(-2px) scale(1.03);
 }
 
+.buttonGroup button:disabled {
+  background: #e0e7ef !important;
+  color: #b0b6be !important;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+  transform: none;
+}
+
 .markdownEditorLayout {
   display: flex;
   gap: 3.5rem;
@@ -416,5 +425,35 @@
   }
   .markdownEditorLayout::before {
     display: none;
+  }
+}
+
+.a4Preview {
+  background: #fff;
+  width: 210mm;
+  min-height: 297mm;
+  max-width: 100vw;
+  max-height: 90vh;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13), 0 1.5px 6px rgba(0,0,0,0.07);
+  border: 1.5px solid #eaeaea;
+  border-radius: 8px;
+  padding: 2.5rem 2.2rem;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 1.13rem;
+  line-height: 1.7;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .a4Preview {
+    width: 98vw;
+    min-width: 0;
+    min-height: 60vh;
+    padding: 1.2rem 0.5rem;
+    font-size: 1rem;
   }
 }
