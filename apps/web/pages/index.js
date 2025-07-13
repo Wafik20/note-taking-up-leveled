@@ -1,77 +1,148 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
-import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
-export default function Home() {
-  const [apiResponse, setApiResponse] = useState('');
+function PublicHomePage() {
+  return (
+    <>
+      {/* Hero Section */}
+      <main className={styles.heroMain}>
+        <section className={styles.heroSection}>
+          <h1 className={styles.heroTitle}>Note Taking Upleveled</h1>
+          <p className={styles.heroTagline}>Markdown notes with math made effortless.</p>
+          <p className={styles.heroDesc}>
+            A modern, markdown-based note editor with LaTeX math rendering support — designed for students, researchers, developers, and anyone who wants more expressive, structured note-taking.
+          </p>
+          <div style={{display: 'flex', justifyContent: 'center', gap: '1.2rem'}}>
+            <Link href="/register"><button className={styles.ctaButton}>Sign Up</button></Link>
+            <Link href="/login"><button className={styles.ctaButton} style={{background: '#f4f6fa', color: 'var(--primary)'}}>Log In</button></Link>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className={styles.featuresSection}>
+          <h2 className={styles.featuresTitle}>Features</h2>
+          <div className={styles.featuresGrid}>
+            <div className={styles.featureCard}>
+              <span className={styles.featureIcon}>📝</span>
+              <h3>Markdown note-taking</h3>
+              <p>Write notes with headings, lists, code, and more. Live preview as you type.</p>
+            </div>
+            <div className={styles.featureCard}>
+              <span className={styles.featureIcon}>∑</span>
+              <h3>LaTeX math support</h3>
+              <p>Render beautiful math formulas with MathJax. Inline and block math supported.</p>
+            </div>
+            <div className={styles.featureCard}>
+              <span className={styles.featureIcon}>💾</span>
+              <h3>Persistent saving</h3>
+              <p>Your notes are saved and always accessible. Never lose your work.</p>
+            </div>
+            <div className={styles.featureCard}>
+              <span className={styles.featureIcon}>🎯</span>
+              <h3>Distraction-free interface</h3>
+              <p>Clean, minimalist design helps you focus on your ideas.</p>
+            </div>
+            <div className={styles.featureCard}>
+              <span className={styles.featureIcon}>⬇️</span>
+              <h3>Export as Markdown</h3>
+              <p>Download your notes as .md files for use anywhere.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Demo Screenshot Section */}
+        <section className={styles.demoSection}>
+          <h2 className={styles.demoTitle}>See it in Action</h2>
+          <div className={styles.demoImagePlaceholder}>
+            <span>Demo Screenshot / GIF Coming Soon</span>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <div>
+          <span className={styles.footerAppName}>Note Taking Upleveled</span> &copy; {new Date().getFullYear()}
+        </div>
+        <div className={styles.footerLinks}>
+          <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <span>|</span>
+          <a href="#">Privacy Policy</a>
+          <span>|</span>
+          <a href="#">Contact</a>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+function UserHomePage() {
+  const { user, signOut } = useAuth();
+  const router = useRouter();
+  const [recentNotes, setRecentNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function checkApi() {
+    async function fetchNotes() {
       try {
-        console.log("checking api...");
-        console.log(process.env.API_PORT);
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/ping`;
-        const res = await fetch(apiUrl);
-        const data = await res.json();
-        setApiResponse(`API response: "${data.message}"`);
-      } catch (error) {
-        console.error('Error fetching from API:', error);
-        setApiResponse('Could not connect to API. Is it running?');
-      }
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setRecentNotes(data.slice(0, 5));
+        }
+      } catch (e) {}
+      setLoading(false);
     }
-    checkApi();
+    fetchNotes();
   }, []);
 
   return (
+    <main className={styles.userHomeMain}>
+      <section className={styles.userHeroSection}>
+        <h1 className={styles.userWelcome}>Welcome back{user?.name ? `, ${user.name}` : ''}!</h1>
+        <div className={styles.userQuickActions}>
+          <Link href="/notes"><button className={styles.ctaButton}>View My Notes</button></Link>
+          <Link href="/notes"><button className={styles.ctaButton} style={{background: '#22c55e', color: '#fff'}}>Create New Note</button></Link>
+          <button className={styles.ctaButton} style={{background: '#f44336', color: '#fff'}} onClick={signOut}>Log Out</button>
+        </div>
+      </section>
+      <section className={styles.userRecentSection}>
+        <h2 className={styles.featuresTitle} style={{marginBottom: '1.2rem'}}>Recent Notes</h2>
+        {loading ? <div>Loading...</div> : (
+          <div className={styles.userNotesList}>
+            {recentNotes.length === 0 ? (
+              <div className={styles.userNoNotes}>No notes yet. Start writing!</div>
+            ) : recentNotes.map(note => (
+              <Link key={note.id} href={`/notes/${note.id}`} className={styles.userNoteCard}>
+                <div>
+                  <div className={styles.userNoteTitle}>{note.title || 'Untitled Note'}</div>
+                  <div className={styles.userNoteSnippet}>{note.content?.slice(0, 80) || ''}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
+  );
+}
+
+export default function HomePage() {
+  const { user } = useAuth();
+  return (
     <div className={styles.container}>
       <Head>
-        <title>Next.js API Test</title>
+        <title>Note Taking Upleveled</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main>
-        <h1 className={styles.title}>
-          Connecting to the API
-        </h1>
-
-        <p className={styles.description}>
-          {apiResponse || 'Pinging API...'}
-        </p>
-      </main>
-
-      <style jsx>{`
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            Segoe UI,
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            Fira Sans,
-            Droid Sans,
-            Helvetica Neue,
-            sans-serif;
-        }
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
+      {user ? <UserHomePage /> : <PublicHomePage />}
     </div>
   );
 }

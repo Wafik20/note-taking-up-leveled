@@ -457,3 +457,259 @@
     font-size: 1rem;
   }
 }
+
+.heroMain {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 2.5rem;
+}
+
+.heroSection {
+  width: 100%;
+  text-align: center;
+  margin-top: 3.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.heroTitle {
+  font-size: 3.2rem;
+  font-weight: 900;
+  margin-bottom: 1.1rem;
+  letter-spacing: -1px;
+}
+
+.heroTagline {
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--primary);
+  margin-bottom: 1.2rem;
+}
+
+.heroDesc {
+  font-size: 1.13rem;
+  color: #444;
+  margin-bottom: 2.2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaButton {
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.18rem;
+  font-weight: 700;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,112,243,0.10);
+  transition: background 0.18s, box-shadow 0.18s, transform 0.1s;
+}
+.ctaButton:hover, .ctaButton:focus {
+  background: var(--primary-dark);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.featuresSection {
+  width: 100%;
+  margin-bottom: 3.5rem;
+}
+.featuresTitle {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+}
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.featureCard {
+  background: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 2rem 1.2rem 1.5rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 180px;
+}
+.featureIcon {
+  font-size: 2.2rem;
+  margin-bottom: 0.7rem;
+}
+
+.demoSection {
+  width: 100%;
+  margin-bottom: 3.5rem;
+  text-align: center;
+}
+.demoTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+}
+.demoImagePlaceholder {
+  width: 100%;
+  max-width: 700px;
+  min-height: 260px;
+  margin: 0 auto;
+  background: #f4f6fa;
+  border: 2px dashed #e0e7ef;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b0b6be;
+  font-size: 1.18rem;
+  font-style: italic;
+}
+
+.footer {
+  width: 100%;
+  padding: 2.2rem 0 1.2rem 0;
+  background: none;
+  text-align: center;
+  color: #888;
+  font-size: 1.05rem;
+  border-top: 1px solid #eaeaea;
+  margin-top: 2.5rem;
+}
+.footerAppName {
+  font-weight: 700;
+  color: var(--primary);
+}
+.footerLinks {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+}
+.footerLinks a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.18s;
+}
+.footerLinks a:hover, .footerLinks a:focus {
+  color: var(--primary-dark);
+}
+
+@media (max-width: 700px) {
+  .heroTitle {
+    font-size: 2.1rem;
+  }
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  .demoImagePlaceholder {
+    min-height: 120px;
+    font-size: 1rem;
+  }
+}
+
+.userHomeMain {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 2.5rem;
+}
+
+.userHeroSection {
+  width: 100%;
+  text-align: center;
+  margin-top: 3.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.userWelcome {
+  font-size: 2.3rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+}
+
+.userQuickActions {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.userRecentSection {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  margin-top: 1.5rem;
+}
+
+.userNotesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.userNoteCard {
+  display: block;
+  background: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 1.2rem 1.5rem 1.1rem 1.5rem;
+  text-decoration: none;
+  color: #222;
+  transition: box-shadow 0.18s, border 0.18s, background 0.18s;
+  border: 1.5px solid #f4f6fa;
+}
+.userNoteCard:hover, .userNoteCard:focus {
+  box-shadow: 0 4px 16px rgba(0,112,243,0.10);
+  border: 1.5px solid var(--primary);
+  background: #f8fafc;
+}
+.userNoteTitle {
+  font-size: 1.18rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.userNoteSnippet {
+  font-size: 1.01rem;
+  color: #666;
+  white-space: pre-line;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.userNoNotes {
+  color: #b0b6be;
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 2.5rem 0;
+}
+
+@media (max-width: 700px) {
+  .userWelcome {
+    font-size: 1.3rem;
+  }
+  .userHeroSection {
+    margin-top: 2rem;
+    margin-bottom: 1.2rem;
+  }
+  .userRecentSection {
+    margin-top: 0.7rem;
+  }
+  .userNoteCard {
+    padding: 0.8rem 0.7rem 0.7rem 0.7rem;
+  }
+}
