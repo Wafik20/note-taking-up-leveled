@@ -2,10 +2,15 @@
 // Each function now accepts a user-scoped supabase client
 // to ensure RLS policies are applied correctly.
 
-async function createNote(supabase, { title, content, owner_id }) {
+async function createNote(supabase, { title, content, owner_id, group_id }) {
   const { data, error } = await supabase
     .from('notes')
-    .insert([{ title, content, owner_id }])
+    .insert([{ 
+      title: title || 'Untitled Note', 
+      content: content || '', 
+      owner_id, 
+      group_id 
+    }])
     .select()
     .single(); // Use single to get the object directly
 
@@ -40,40 +45,58 @@ async function getNoteById(supabase, id) {
     return data;
 }
 
-async function updateNote(supabase, id, { title, content }, user_id) {
-    const { data: originalNote, error: getError } = await supabase
-        .from('notes')
-        .select('content')
-        .eq('id', id)
-        .single();
+async function updateNote(supabase, id, updateData, user_id) {
+    // Check if this is a content update
+    const isContentUpdate = updateData.content !== undefined;
+    
+    if (isContentUpdate) {
+        // For content updates, we need to log the edit and broadcast
+        const { data: originalNote, error: getError } = await supabase
+            .from('notes')
+            .select('content')
+            .eq('id', id)
+            .single();
 
-    if (getError) throw new Error('Note not found or permission denied.');
+        if (getError) throw new Error('Note not found or permission denied.');
+        
+        // Update the note
+        const { data, error } = await supabase
+            .from('notes')
+            .update(updateData)
+            .eq('id', id)
+            .select()
+            .single();
 
-    const { data, error } = await supabase
-        .from('notes')
-        .update({ title, content })
-        .eq('id', id)
-        .select()
-        .single();
+        if (error) throw new Error(error.message);
+        
+        // Log the edit in the note_edits table
+        const { error: editError } = await supabase
+            .from('note_edits')
+            .insert([{ note_id: id, editor_id: user_id, old_content: originalNote.content, new_content: updateData.content }]);
 
-    if (error) throw new Error(error.message);
-  
-    // Log the edit in the note_edits table
-    const { error: editError } = await supabase
-        .from('note_edits')
-        .insert([{ note_id: id, editor_id: user_id, old_content: originalNote.content, new_content: content }]);
+        if (editError) console.error('Failed to log note edit:', editError.message);
 
-    if (editError) console.error('Failed to log note edit:', editError.message);
+        // Broadcast the update, including the editor's ID
+        const channel = supabase.channel(`note-edit:${id}`);
+        channel.send({
+            type: 'broadcast',
+            event: 'note:update',
+            payload: { ...data, editor_id: user_id },
+        });
 
-    // Broadcast the update, including the editor's ID
-    const channel = supabase.channel(`note-edit:${id}`);
-    channel.send({
-        type: 'broadcast',
-        event: 'note:update',
-        payload: { ...data, editor_id: user_id },
-    });
+        return data;
+    } else {
+        // For metadata updates (title, group_id), just update without logging
+        const { data, error } = await supabase
+            .from('notes')
+            .update(updateData)
+            .eq('id', id)
+            .select()
+            .single();
 
-    return data;
+        if (error) throw new Error(error.message);
+        return data;
+    }
 }
 
 async function deleteNote(supabase, id) {

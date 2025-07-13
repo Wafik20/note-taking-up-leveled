@@ -1,0 +1,26 @@
+import { buildGroupTree } from '../utils/groupTree';
+import GroupItem from './GroupItem';
+
+export default function GroupTreeSidebar({ groups, notes, selectedGroupId, setSelectedGroupId, setSelectedNoteId, onAddNote, onAddGroup, onRenameGroup, onDeleteGroup, loadingGroups, onNoteSelect }) {
+  const tree = buildGroupTree(groups, notes);
+  return (
+    <aside style={{ minWidth: 260, maxWidth: 320, borderRight: '1.5px solid #eaeaea', padding: '2rem 1rem', background: '#f8fafc', height: '100%' }}>
+      {loadingGroups ? (
+        <div style={{ color: '#b0b6be', textAlign: 'center', marginTop: '2rem' }}>Loading groups...</div>
+      ) : tree.map(group => (
+        <GroupItem
+          key={group.id}
+          group={group}
+          selectedGroupId={selectedGroupId}
+          setSelectedGroupId={setSelectedGroupId}
+          setSelectedNoteId={setSelectedNoteId}
+          onAddNote={onAddNote}
+          onAddGroup={onAddGroup}
+          onRenameGroup={onRenameGroup}
+          onDeleteGroup={onDeleteGroup}
+          onNoteSelect={onNoteSelect}
+        />
+      ))}
+    </aside>
+  );
+} 

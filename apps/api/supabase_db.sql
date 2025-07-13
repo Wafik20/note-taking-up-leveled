@@ -45,6 +45,22 @@ CREATE TABLE note_edits (
 );
 
 -- ---------------------------------------------------------------------------
+-- 1A. NOTE GROUPS (FOLDERS) TABLE
+-- ---------------------------------------------------------------------------
+
+-- Create the note_groups table for hierarchical organization of notes.
+CREATE TABLE note_groups (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  owner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  parent_group_id UUID REFERENCES note_groups(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Add group_id to notes (nullable, can be ungrouped)
+ALTER TABLE notes ADD COLUMN group_id UUID REFERENCES note_groups(id) ON DELETE SET NULL;
+
+-- ---------------------------------------------------------------------------
 -- 2. HELPER FUNCTIONS & TRIGGERS
 -- ---------------------------------------------------------------------------
 
@@ -175,3 +191,29 @@ USING (
         WHERE notes.id = note_edits.note_id -- The RLS policy on 'notes' will be applied here.
     )
 );
+
+-- ---------------------------------------------------------------------------
+-- 3A. RLS FOR NOTE GROUPS
+-- ---------------------------------------------------------------------------
+ALTER TABLE note_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE note_groups FORCE ROW LEVEL SECURITY;
+
+-- Users can see their own groups
+CREATE POLICY "Users can see their own groups"
+ON note_groups FOR SELECT
+USING (auth.uid() = owner_id);
+
+-- Users can create groups for themselves
+CREATE POLICY "Users can create groups for themselves"
+ON note_groups FOR INSERT
+WITH CHECK (auth.uid() = owner_id);
+
+-- Users can update their own groups
+CREATE POLICY "Users can update their own groups"
+ON note_groups FOR UPDATE
+USING (auth.uid() = owner_id);
+
+-- Users can delete their own groups
+CREATE POLICY "Users can delete their own groups"
+ON note_groups FOR DELETE
+USING (auth.uid() = owner_id);

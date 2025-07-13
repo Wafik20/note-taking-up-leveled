@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const notesRouter = require('./routes/notes');
 const authRouter = require('./routes/auth');
+const groupsRouter = require('./routes/groups');
 
 const app = express();
 const port = process.env.API_PORT || 3001;
@@ -21,6 +22,7 @@ app.get('/api/ping', (req, res) => {
 // Route handlers
 app.use('/api/auth', authRouter);
 app.use('/api/notes', notesRouter);
+app.use('/api/groups', groupsRouter);
 
 app.get('/', (req, res) => {
   res.send('Express on Vercel');

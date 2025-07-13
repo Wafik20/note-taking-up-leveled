@@ -1,83 +1,51 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/router';
-import NoteCard from '../../components/NoteCard';
-import CreateNoteModal from '../../components/CreateNoteModal';
-import styles from '../../styles/Home.module.css';
+import NotesDashboard from '../../components/NotesDashboard';
 import { useNotification } from '../../context/NotificationContext';
 
-export default function Notes() {
+export default function NotesPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [notes, setNotes] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { showNotification } = useNotification();
+  const [groups, setGroups] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
       router.push('/login');
     } else {
-      fetchNotes();
+      fetchData();
     }
+    // eslint-disable-next-line
   }, [user]);
 
-  const fetchNotes = async () => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setNotes(data);
-    } else {
-      console.error('Error fetching notes:', await response.text());
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const [groupsRes, notesRes] = await Promise.all([
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/groups`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        }),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        })
+      ]);
+      const groupsData = groupsRes.ok ? await groupsRes.json() : [];
+      const notesData = notesRes.ok ? await notesRes.json() : [];
+      setGroups(groupsData);
+      setNotes(notesData);
+    } catch (e) {
+      showNotification('Error loading notes or groups', 'error');
     }
+    setLoading(false);
   };
 
-  const handleCreateNote = async (title) => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({ title, content: '' }),
-    });
+  if (loading) {
+    return <div style={{ textAlign: 'center', marginTop: '4rem', color: '#b0b6be' }}>Loading...</div>;
+  }
 
-    if (response.ok) {
-      const data = await response.json();
-      setIsModalOpen(false);
-      fetchNotes();
-      showNotification('Note created!', 'success');
-      router.push(`/notes/${data.id}`);
-    } else {
-      showNotification('Error creating note', 'error');
-      console.error('Error creating note:', await response.text());
-    }
-  };
-
-  return (
-    <div className={styles.container}>
-      <main>
-        <h1 className={styles.title}>Your Notes</h1>
-        <div className={styles.buttonContainer}>
-          <button onClick={() => setIsModalOpen(true)}>Create New Note</button>
-        </div>
-        <CreateNoteModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onCreate={handleCreateNote}
-        />
-        <div className={styles.grid}>
-          {notes.map((note) => (
-            <NoteCard key={note.id} note={note} />
-          ))}
-        </div>
-      </main>
-    </div>
-  );
+  return <NotesDashboard groups={groups} notes={notes} />;
 }

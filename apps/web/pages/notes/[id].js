@@ -58,8 +58,10 @@ export default function NotePage() {
     if (response.ok) {
       const data = await response.json();
       setNote(data);
-      setContent(data.content);
-      setSavedContent(data.content);
+      // Ensure content is always a string, never null
+      const safeContent = data.content || '';
+      setContent(safeContent);
+      setSavedContent(safeContent);
     } else {
       console.error('Error fetching note:', await response.text());
       router.push('/notes');

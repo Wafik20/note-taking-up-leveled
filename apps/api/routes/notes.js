@@ -6,11 +6,11 @@ const { isAuthenticated } = require('../middleware/auth');
 
 // Create a new note
 router.post('/', isAuthenticated, async (req, res) => {
-  const { title, content } = req.body;
+  const { title, content, group_id } = req.body;
   const owner_id = req.user.id; 
   try {
     // Pass the user-scoped client from middleware to the service
-    const note = await noteService.createNote(req.supabase, { title, content, owner_id });
+    const note = await noteService.createNote(req.supabase, { title, content, owner_id, group_id });
     res.status(201).json(note);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -41,10 +41,16 @@ router.get('/:id', isAuthenticated, async (req, res) => {
 // Update a note
 router.put('/:id', isAuthenticated, async (req, res) => {
   const { id } = req.params;
-  const { title, content } = req.body;
+  const { title, content, group_id } = req.body;
   const user_id = req.user.id;
   try {
-    const updatedNote = await noteService.updateNote(req.supabase, id, { title, content }, user_id);
+    // Determine what type of update this is
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (content !== undefined) updateData.content = content;
+    if (group_id !== undefined) updateData.group_id = group_id;
+    
+    const updatedNote = await noteService.updateNote(req.supabase, id, updateData, user_id);
     res.status(200).json(updatedNote);
   } catch (error) {
     res.status(400).json({ error: error.message });
