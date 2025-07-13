@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/router';
 import styles from '../../styles/Home.module.css';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useNotification } from '../../context/NotificationContext';
+import { marked } from 'marked';
 
 export default function NotePage() {
   const { user } = useAuth();
@@ -12,6 +13,25 @@ export default function NotePage() {
   const [note, setNote] = useState(null);
   const [content, setContent] = useState('');
   const { showNotification } = useNotification();
+  const previewRef = useRef(null);
+
+  // Load MathJax with config for $...$ and $$...$$
+  useEffect(() => {
+    if (!window.MathJax) {
+      // Add MathJax config
+      const configScript = document.createElement('script');
+      configScript.type = 'text/javascript';
+      configScript.id = 'mathjax-config';
+      configScript.text = `window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']]}};`;
+      document.head.appendChild(configScript);
+      // Add MathJax script
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.async = true;
+      script.id = 'mathjax-script';
+      document.head.appendChild(script);
+    }
+  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -77,6 +97,22 @@ export default function NotePage() {
     }
   };
 
+  // Render markdown and typeset math
+  useEffect(() => {
+    if (previewRef.current) {
+      previewRef.current.innerHTML = marked.parse(content || '');
+      // Wait for MathJax to be ready, then typeset
+      function typeset() {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise([previewRef.current]);
+        } else {
+          setTimeout(typeset, 200); // Retry until MathJax is ready
+        }
+      }
+      typeset();
+    }
+  }, [content]);
+
   if (!note) {
     return <LoadingSpinner text="Loading note..." />;
   }
@@ -85,11 +121,15 @@ export default function NotePage() {
     <div className={styles.container}>
       <main className={styles.noteContainer}>
         <h1 className={styles.title}>{note.title}</h1>
-        <textarea
-          className={styles.textarea}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
+        <div className={styles.markdownEditorLayout}>
+          <textarea
+            className={styles.markdownEditor}
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            placeholder="Write your markdown (with $math$) here..."
+          />
+          <div className={styles.markdownPreview} ref={previewRef} />
+        </div>
         <div className={styles.buttonGroup}>
           <button onClick={saveNote}>Save</button>
           <button onClick={deleteNote}>Delete</button>
