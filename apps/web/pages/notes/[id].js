@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/router';
 import styles from '../../styles/Home.module.css';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { useNotification } from '../../context/NotificationContext';
 
 export default function NotePage() {
   const { user } = useAuth();
@@ -9,6 +11,7 @@ export default function NotePage() {
   const { id } = router.query;
   const [note, setNote] = useState(null);
   const [content, setContent] = useState('');
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     if (!user) {
@@ -52,7 +55,7 @@ export default function NotePage() {
     });
 
     if (response.ok) {
-      alert('Note saved!');
+      showNotification('Note saved!', 'success');
     } else {
       console.error('Error updating note:', await response.text());
     }
@@ -75,7 +78,7 @@ export default function NotePage() {
   };
 
   if (!note) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner text="Loading note..." />;
   }
 
   return (

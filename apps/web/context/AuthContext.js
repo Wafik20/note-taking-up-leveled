@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const AuthContext = createContext();
 
@@ -77,7 +78,7 @@ export function AuthProvider({ children }) {
     user,
   };
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{loading ? <LoadingSpinner text="Checking authentication..." /> : children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

@@ -1,0 +1,36 @@
+.toast {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 260px;
+  max-width: 90vw;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius, 12px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  font-size: 1.1rem;
+  font-weight: 600;
+  z-index: 2000;
+  color: #fff;
+  cursor: pointer;
+  opacity: 1;
+  animation: fadeIn 0.3s;
+  transition: opacity 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.info {
+  background: var(--primary, #0070f3);
+}
+
+.success {
+  background: #22c55e;
+}
+
+.error {
+  background: #ef4444;
+} 

@@ -4,12 +4,14 @@ import { useRouter } from 'next/router';
 import NoteCard from '../../components/NoteCard';
 import CreateNoteModal from '../../components/CreateNoteModal';
 import styles from '../../styles/Home.module.css';
+import { useNotification } from '../../context/NotificationContext';
 
 export default function Notes() {
   const { user } = useAuth();
   const router = useRouter();
   const [notes, setNotes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     if (!user) {
@@ -50,8 +52,10 @@ export default function Notes() {
       const data = await response.json();
       setIsModalOpen(false);
       fetchNotes();
+      showNotification('Note created!', 'success');
       router.push(`/notes/${data.id}`);
     } else {
+      showNotification('Error creating note', 'error');
       console.error('Error creating note:', await response.text());
     }
   };
