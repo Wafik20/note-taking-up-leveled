@@ -119,22 +119,24 @@ export default function NotePage() {
 
   return (
     <div className={styles.container}>
-      <main className={styles.noteContainer}>
-        <h1 className={styles.title}>{note.title}</h1>
-        <div className={styles.markdownEditorLayout}>
-          <textarea
-            className={styles.markdownEditor}
-            value={content}
-            onChange={e => setContent(e.target.value)}
-            placeholder="Write your markdown (with $math$) here..."
-          />
-          <div className={styles.markdownPreview} ref={previewRef} />
-        </div>
-        <div className={styles.buttonGroup}>
-          <button onClick={saveNote}>Save</button>
-          <button onClick={deleteNote}>Delete</button>
-        </div>
-      </main>
+      <div className={styles.noteCardContainer}>
+        <main className={styles.noteContainer}>
+          <h1 className={styles.title}>{note.title}</h1>
+          <div className={styles.markdownEditorLayout}>
+            <textarea
+              className={styles.markdownEditor}
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              placeholder="Write your markdown (with $math$) here..."
+            />
+            <div className={styles.markdownPreview} ref={previewRef} />
+          </div>
+          <div className={styles.buttonGroup}>
+            <button onClick={saveNote}>Save</button>
+            <button onClick={deleteNote}>Delete</button>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

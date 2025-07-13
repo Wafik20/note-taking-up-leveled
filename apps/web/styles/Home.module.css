@@ -1,5 +1,4 @@
 .container {
-  max-width: 960px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -57,10 +56,11 @@
 }
 
 .title {
-  margin: 0;
+  margin: 0 0 2rem 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 2.5rem;
   text-align: center;
+  font-weight: 800;
 }
 
 .description {
@@ -159,7 +159,21 @@
 }
 
 /* Styles for single note page */
+.noteCardContainer {
+  background: rgba(255,255,255,0.97);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  padding: 3.5rem 3rem 2.5rem 3rem;
+  margin: 3.5rem auto 0 auto;
+  max-width: 1800px;
+  width: 98vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .noteContainer {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -180,22 +194,23 @@
 
 .buttonGroup {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   width: 100%;
-  max-width: 800px;
-  margin-top: 1rem;
+  max-width: 900px;
+  margin-top: 1.5rem;
+  gap: 1.5rem;
 }
 
 .buttonGroup button {
-  margin-left: 1rem;
-  padding: 0.75rem 1.5rem;
+  margin: 0;
+  padding: 0.9rem 2.2rem;
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
 }
 
 .buttonGroup button:first-child {
@@ -205,6 +220,7 @@
 
 .buttonGroup button:first-child:hover {
   background-color: var(--primary-dark);
+  transform: translateY(-2px) scale(1.03);
 }
 
 .buttonGroup button:last-child {
@@ -214,53 +230,105 @@
 
 .buttonGroup button:last-child:hover {
   background-color: #b71c1c;
+  transform: translateY(-2px) scale(1.03);
 }
 
 .markdownEditorLayout {
   display: flex;
-  gap: 2rem;
-  width: 100%;
-  max-width: 900px;
-  margin: 2rem 0;
-  min-height: 350px;
+  gap: 3.5rem;
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto 3rem auto;
+  min-height: 700px;
+  background: #f8fafc;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid #eaeaea;
+  position: relative;
 }
 
 .markdownEditor {
   flex: 1;
-  min-height: 350px;
-  max-height: 60vh;
-  padding: 1.25rem;
-  font-size: 1.1rem;
+  min-height: 700px;
+  max-height: 85vh;
+  padding: 2rem 1.7rem;
+  font-size: 1.22rem;
   border: 1px solid #eaeaea;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
   resize: vertical;
   font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
-  background: #f8fafc;
+  background: #f4f6fa;
   outline: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  line-height: 1.75;
+  margin-right: -1px;
 }
 
 .markdownPreview {
   flex: 1;
-  min-height: 350px;
-  max-height: 60vh;
+  min-height: 700px;
+  max-height: 85vh;
   overflow: auto;
-  background: var(--card-bg);
+  background: #fff;
   border: 1px solid #eaeaea;
-  border-radius: var(--border-radius);
-  padding: 1.25rem;
-  box-shadow: var(--card-shadow);
-  font-size: 1.1rem;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  padding: 2rem 1.7rem;
+  font-size: 1.22rem;
   word-break: break-word;
+  line-height: 1.75;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  margin-left: -1px;
+}
+
+.markdownEditorLayout::before {
+  content: '';
+  position: absolute;
+  top: 1.5rem;
+  bottom: 1.5rem;
+  left: 50%;
+  width: 2px;
+  background: #e0e7ef;
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 1800px) {
+  .noteCardContainer {
+    max-width: 99vw;
+    padding: 2.2rem 0.7rem 1.5rem 0.7rem;
+  }
+  .markdownEditorLayout {
+    max-width: 99vw;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .markdownEditorLayout {
+    max-width: 100vw;
+    gap: 1.2rem;
+  }
 }
 
 @media (max-width: 900px) {
+  .noteCardContainer {
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    max-width: 100vw;
+  }
   .markdownEditorLayout {
     flex-direction: column;
     gap: 1rem;
+    min-height: 300px;
+    max-width: 100vw;
   }
   .markdownEditor, .markdownPreview {
-    max-height: 40vh;
-    min-height: 200px;
+    max-height: 50vh;
+    min-height: 180px;
+    border-radius: var(--border-radius);
+    font-size: 1.05rem;
+    padding: 1rem;
+  }
+  .markdownEditorLayout::before {
+    display: none;
   }
 }
