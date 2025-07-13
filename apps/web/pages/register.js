@@ -23,11 +23,11 @@ export default function Register() {
   };
 
   return (
-    <div className={styles.container}>
-      <main>
-        <h1 className={styles.title}>Register</h1>
-        {error && <p className={styles.error}>{error}</p>}
-        <form onSubmit={handleRegister} className={styles.form}>
+    <div className={styles.authPageContainer}>
+      <div className={styles.authCard}>
+        <h1 className={styles.authTitle}>Register</h1>
+        {error && <p className={styles.authError}>{error}</p>}
+        <form onSubmit={handleRegister} className={styles.authForm}>
           <input
             type="email"
             placeholder="Email"
@@ -44,7 +44,7 @@ export default function Register() {
           />
           <button type="submit">Register</button>
         </form>
-      </main>
+      </div>
     </div>
   );
 }

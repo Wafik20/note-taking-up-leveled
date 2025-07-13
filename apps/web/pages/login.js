@@ -23,11 +23,11 @@ export default function Login() {
   };
 
   return (
-    <div className={styles.container}>
-      <main>
-        <h1 className={styles.title}>Login</h1>
-        {error && <p className={styles.error}>{error}</p>}
-        <form onSubmit={handleLogin} className={styles.form}>
+    <div className={styles.authPageContainer}>
+      <div className={styles.authCard}>
+        <h1 className={styles.authTitle}>Login</h1>
+        {error && <p className={styles.authError}>{error}</p>}
+        <form onSubmit={handleLogin} className={styles.authForm}>
           <input
             type="email"
             placeholder="Email"
@@ -44,7 +44,7 @@ export default function Login() {
           />
           <button type="submit">Login</button>
         </form>
-      </main>
+      </div>
     </div>
   );
 }
