@@ -210,6 +210,9 @@ export default function NotesDashboard({ groups: initialGroups, notes: initialNo
 
   // Notes for selected group
   const notesForSelectedGroup = notes.filter(n => n.group_id === selectedGroupId);
+  
+  // Check if this is the initial empty state (no groups and no notes at all)
+  const isInitialEmptyState = groups.length === 0 && notes.length === 0;
 
   return (
     <div style={{ display: 'flex', minHeight: '80vh' }}>
@@ -227,23 +230,25 @@ export default function NotesDashboard({ groups: initialGroups, notes: initialNo
         onNoteSelect={handleNoteSelect}
       />
       <main style={{ flex: 1, padding: '2.5rem 2rem', minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left', marginBottom: 24 }}>
-          <h2 style={{ fontWeight: 800, fontSize: 22, marginRight: '20px' }}>
-            {groups.find(g => g.id === selectedGroupId)?.name || 'All Notes'}
-          </h2>
-          <button
-            style={{ background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: 999, padding: '0.7rem 2rem', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}
-            onClick={() => handleAddNote(selectedGroupId)}
-          >
-            + Create Note
-          </button>
-          <button
-            style={{ marginLeft: 16, background: '#22c55e', color: '#fff', border: 'none', borderRadius: 999, padding: '0.7rem 2rem', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}
-            onClick={() => openCreateGroupModal(null)}
-          >
-            + New Group
-          </button>
-        </div>
+        {!isInitialEmptyState && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left', marginBottom: 24 }}>
+            <h2 style={{ fontWeight: 800, fontSize: 22, marginRight: '20px' }}>
+              {groups.find(g => g.id === selectedGroupId)?.name || 'All Notes'}
+            </h2>
+            <button
+              style={{ background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: 999, padding: '0.7rem 2rem', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}
+              onClick={() => handleAddNote(selectedGroupId)}
+            >
+              + Create Note
+            </button>
+            <button
+              style={{ marginLeft: 16, background: '#22c55e', color: '#fff', border: 'none', borderRadius: 999, padding: '0.7rem 2rem', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}
+              onClick={() => openCreateGroupModal(null)}
+            >
+              + New Group
+            </button>
+          </div>
+        )}
         <NoteList
           notes={notesForSelectedGroup}
           groups={groups}

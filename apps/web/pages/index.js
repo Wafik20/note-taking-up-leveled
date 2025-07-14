@@ -139,7 +139,64 @@ function UserHomePage() {
         {loading ? <div>Loading...</div> : (
           <div className={styles.userNotesList}>
             {recentNotes.length === 0 ? (
-              <div className={styles.userNoNotes}>No notes yet. Start writing!</div>
+              <div style={{
+                textAlign: 'center',
+                padding: '3rem 2rem',
+                background: '#f8fafc',
+                borderRadius: 12,
+                border: '2px dashed #e2e8f0',
+                margin: '2rem 0'
+              }}>
+                <div style={{
+                  fontSize: '4rem',
+                  marginBottom: '1.5rem',
+                  opacity: 0.6
+                }}>
+                  📝
+                </div>
+                <h3 style={{
+                  color: '#333',
+                  fontSize: '1.3rem',
+                  fontWeight: 600,
+                  marginBottom: '1rem'
+                }}>
+                  Ready to start writing?
+                </h3>
+                <p style={{
+                  color: '#666',
+                  fontSize: '1rem',
+                  lineHeight: 1.6,
+                  marginBottom: '2rem',
+                  maxWidth: '400px',
+                  margin: '0 auto 2rem auto'
+                }}>
+                  Create your first note and start organizing your thoughts with our powerful markdown editor.
+                </p>
+                <Link href="/notes">
+                  <button style={{
+                    background: 'var(--primary)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 10,
+                    padding: '1rem 2rem',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 2px 8px rgba(0,112,243,0.2)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(0,112,243,0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 2px 8px rgba(0,112,243,0.2)';
+                  }}>
+                    Go to Notes →
+                  </button>
+                </Link>
+              </div>
             ) : recentNotes.map(note => (
               <Link key={note.id} href={`/notes/${note.id}`} className={styles.userNoteCard}>
                 <div style={{ flex: 1 }}>

@@ -17,10 +17,97 @@ export default function NoteList({
   // Get subgroups of the selected group
   const subgroups = groups.filter(group => group.parent_group_id === selectedGroupId);
   
-  // Show both subgroups and notes, or "no content" message
+  // Check if this is the initial empty state (no groups and no notes at all)
+  const isInitialEmptyState = groups.length === 0 && notes.length === 0;
+  
+  // Show both subgroups and notes, or appropriate message
   return (
     <div style={{ flex: 1, padding: '2.5rem 2rem', minWidth: 0 }}>
-      {subgroups.length === 0 && notes.length === 0 ? (
+      {isInitialEmptyState ? (
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '3rem',
+          padding: '2rem 1rem'
+        }}>
+          <div style={{ 
+            fontSize: '4rem', 
+            marginBottom: '1.5rem',
+            opacity: 0.6
+          }}>
+            📝
+          </div>
+          <h2 style={{ 
+            color: '#333', 
+            fontSize: '1.5rem', 
+            fontWeight: 700,
+            marginBottom: '1rem'
+          }}>
+            Welcome to your notes!
+          </h2>
+          <p style={{ 
+            color: '#666', 
+            fontSize: '1rem',
+            lineHeight: 1.6,
+            marginBottom: '2.5rem',
+            maxWidth: '500px',
+            margin: '0 auto 2.5rem auto'
+          }}>
+            Start by creating your first note or group to organize your thoughts and ideas.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '300px', margin: '0 auto' }}>
+            <button
+              onClick={() => onAddNote()}
+              style={{
+                background: 'var(--primary)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 10,
+                padding: '1rem 2rem',
+                fontSize: '1rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 8px rgba(0,112,243,0.2)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(0,112,243,0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 8px rgba(0,112,243,0.2)';
+              }}
+            >
+              + Create Your First Note
+            </button>
+            <button
+              onClick={() => onAddGroup()}
+              style={{
+                background: '#22c55e',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 10,
+                padding: '1rem 2rem',
+                fontSize: '1rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 8px rgba(34,197,94,0.2)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(34,197,94,0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 8px rgba(34,197,94,0.2)';
+              }}
+            >
+              + Create Your First Group
+            </button>
+          </div>
+        </div>
+      ) : subgroups.length === 0 && notes.length === 0 ? (
         <div style={{ color: '#b0b6be', textAlign: 'center', marginTop: '3rem' }}>
           No notes here yet — create one!
         </div>
