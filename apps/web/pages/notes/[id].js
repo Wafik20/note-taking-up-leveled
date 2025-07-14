@@ -123,6 +123,21 @@ export default function NotePage() {
     }
   };
 
+  // Add export to markdown handler
+  const exportToMarkdown = () => {
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (note?.title ? note.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'note') + '.md';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 0);
+  };
+
   // Render markdown and typeset math
   useEffect(() => {
     if (previewRef.current) {
@@ -151,7 +166,7 @@ export default function NotePage() {
       <div className={styles.noteCardContainer}>
         <main className={styles.noteContainer}>
           <h1 className={styles.title}>{note.title}</h1>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '1400px', marginBottom: '1.2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '1400px', marginBottom: '1.2rem', gap: '0.7rem' }}>
             <button
               style={{
                 background: mode === 'edit' ? 'var(--primary)' : '#f4f6fa',
@@ -161,7 +176,7 @@ export default function NotePage() {
                 padding: '0.5rem 1.5rem',
                 fontWeight: 600,
                 fontSize: '1.05rem',
-                marginRight: '0.7rem',
+                marginRight: 0,
                 cursor: 'pointer',
                 boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
                 outline: 'none',
@@ -191,6 +206,42 @@ export default function NotePage() {
             >
               Preview
             </button>
+            <button
+              style={{
+                background: '#f44336',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.5rem 1.5rem',
+                fontWeight: 600,
+                fontSize: '1.05rem',
+                cursor: 'pointer',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
+                outline: 'none',
+                transition: 'background 0.18s, color 0.18s',
+              }}
+              onClick={deleteNote}
+            >
+              Delete
+            </button>
+            <button
+              style={{
+                background: '#22c55e',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.5rem 1.5rem',
+                fontWeight: 600,
+                fontSize: '1.05rem',
+                cursor: 'pointer',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
+                outline: 'none',
+                transition: 'background 0.18s, color 0.18s',
+              }}
+              onClick={exportToMarkdown}
+            >
+              Export to Markdown
+            </button>
           </div>
           {mode === 'edit' ? (
             <>
@@ -205,7 +256,6 @@ export default function NotePage() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <span style={{ color: saving ? '#888' : '#22c55e', fontSize: 14 }}>{saveStatus}</span>
-                <button onClick={deleteNote}>Delete</button>
               </div>
             </>
           ) : (
