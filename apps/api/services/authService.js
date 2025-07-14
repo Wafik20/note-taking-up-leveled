@@ -9,12 +9,12 @@ const supabaseAdmin = createClient(
 );
 
 async function register(email, password) {
-  // 1. Lookup user by email using admin client
-  const { data: users, error: lookupError } = await supabaseAdmin.auth.admin.listUsers({ email });
+  // 1. Fetch all users and filter for the exact email
+  const { data: usersData, error: lookupError } = await supabaseAdmin.auth.admin.listUsers();
   if (lookupError) {
     throw new Error('Error looking up user.');
   }
-  const user = users?.users?.[0];
+  const user = usersData?.users?.find(u => u.email === email);
   if (user) {
     throw new Error('A user with this email already exists.');
   }
