@@ -8,7 +8,23 @@ const groupsRouter = require('./routes/groups');
 const app = express();
 const port = process.env.API_PORT || 3001;
 
-app.use(cors());
+const allowedOrigins = [
+  'https://note-taking-up-leveled-web-one.vercel.app', // main web app
+  'https://note-taking-up-leveled-web.vercel.app',    // API endpoint (self)
+  'http://localhost:3000' // local dev (optional)
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
+// Handle preflight requests for all routes
+app.options('*', cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 app.use(express.json());
 
 app.get('/api', (req, res) => {
