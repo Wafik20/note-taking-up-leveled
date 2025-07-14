@@ -214,8 +214,8 @@ export default function NotesDashboard({ groups: initialGroups, notes: initialNo
         onNoteSelect={handleNoteSelect}
       />
       <main style={{ flex: 1, padding: '2.5rem 2rem', minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-          <h2 style={{ fontWeight: 800, fontSize: 22, margin: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left', marginBottom: 24 }}>
+          <h2 style={{ fontWeight: 800, fontSize: 22, marginRight: '20px' }}>
             {groups.find(g => g.id === selectedGroupId)?.name || 'All Notes'}
           </h2>
           <button
@@ -233,9 +233,16 @@ export default function NotesDashboard({ groups: initialGroups, notes: initialNo
         </div>
         <NoteList
           notes={notesForSelectedGroup}
+          groups={groups}
+          selectedGroupId={selectedGroupId}
           selectedNoteId={selectedNoteId}
           setSelectedNoteId={setSelectedNoteId}
           onNoteSelect={handleNoteSelect}
+          onAddNote={handleAddNote}
+          onAddGroup={openCreateGroupModal}
+          onRenameGroup={openRenameGroupModal}
+          onDeleteGroup={handleDeleteGroup}
+          onGroupSelect={setSelectedGroupId}
         />
       </main>
       <NoteEditorModal

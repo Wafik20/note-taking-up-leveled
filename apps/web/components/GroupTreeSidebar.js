@@ -4,7 +4,7 @@ import GroupItem from './GroupItem';
 export default function GroupTreeSidebar({ groups, notes, selectedGroupId, setSelectedGroupId, setSelectedNoteId, onAddNote, onAddGroup, onRenameGroup, onDeleteGroup, loadingGroups, onNoteSelect }) {
   const tree = buildGroupTree(groups, notes);
   return (
-    <aside style={{ minWidth: 260, maxWidth: 320, borderRight: '1.5px solid #eaeaea', padding: '2rem 1rem', background: '#f8fafc', height: '100%' }}>
+    <aside style={{ minWidth: 430, maxWidth: 500, borderRight: '1.5px solid #eaeaea', padding: '2rem 1rem', background: '#f8fafc', height: '100%' }}>
       {loadingGroups ? (
         <div style={{ color: '#b0b6be', textAlign: 'center', marginTop: '2rem' }}>Loading groups...</div>
       ) : tree.map(group => (

@@ -81,8 +81,7 @@ function PublicHomePage() {
 }
 
 function UserHomePage() {
-  const { user, signOut } = useAuth();
-  const router = useRouter();
+  const { user } = useAuth();
   const [recentNotes, setRecentNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -103,15 +102,37 @@ function UserHomePage() {
     fetchNotes();
   }, []);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return 'Today';
+    if (diffDays === 2) return 'Yesterday';
+    if (diffDays <= 7) return `${diffDays - 1} days ago`;
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+    });
+  };
+
+  const getWordCount = (content) => {
+    if (!content) return 0;
+    return content.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
+  const getReadingTime = (content) => {
+    const words = getWordCount(content);
+    const readingTime = Math.ceil(words / 200); // Average reading speed
+    return readingTime < 1 ? '< 1 min' : `${readingTime} min read`;
+  };
+
   return (
     <main className={styles.userHomeMain}>
       <section className={styles.userHeroSection}>
-        <h1 className={styles.userWelcome}>Welcome back{user?.name ? `, ${user.name}` : ''}!</h1>
-        <div className={styles.userQuickActions}>
-          <Link href="/notes"><button className={styles.ctaButton}>View My Notes</button></Link>
-          <Link href="/notes"><button className={styles.ctaButton} style={{background: '#22c55e', color: '#fff'}}>Create New Note</button></Link>
-          <button className={styles.ctaButton} style={{background: '#f44336', color: '#fff'}} onClick={signOut}>Log Out</button>
-        </div>
+        <h1 className={styles.userWelcome}>Welcome back, {user?.name || user?.email || 'there'}!</h1>
       </section>
       <section className={styles.userRecentSection}>
         <h2 className={styles.featuresTitle} style={{marginBottom: '1.2rem'}}>Recent Notes</h2>
@@ -121,9 +142,26 @@ function UserHomePage() {
               <div className={styles.userNoNotes}>No notes yet. Start writing!</div>
             ) : recentNotes.map(note => (
               <Link key={note.id} href={`/notes/${note.id}`} className={styles.userNoteCard}>
-                <div>
+                <div style={{ flex: 1 }}>
                   <div className={styles.userNoteTitle}>{note.title || 'Untitled Note'}</div>
-                  <div className={styles.userNoteSnippet}>{note.content?.slice(0, 80) || ''}</div>
+                  <div className={styles.userNoteSnippet}>
+                    {note.content?.slice(0, 120) || 'No content yet...'}
+                    {note.content && note.content.length > 120 && '...'}
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '1rem', 
+                    marginTop: '0.5rem',
+                    fontSize: '0.8rem',
+                    color: '#666'
+                  }}>
+                    <span>📅 {formatDate(note.updated_at || note.created_at)}</span>
+                    <span>📝 {getWordCount(note.content)} words</span>
+                    <span>⏱️ {getReadingTime(note.content)}</span>
+                    {note.group_id && (
+                      <span>📁 {note.group_name || 'Group'}</span>
+                    )}
+                  </div>
                 </div>
               </Link>
             ))}
