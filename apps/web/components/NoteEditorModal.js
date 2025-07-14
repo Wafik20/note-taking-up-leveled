@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import ConfirmationModal from './ConfirmationModal';
 
 export default function NoteEditorModal({ open, onClose, onSave, onDelete, groups, initialNote = {}, onCreateGroup }) {
   const [title, setTitle] = useState(initialNote.title || '');
   const [groupId, setGroupId] = useState(initialNote.group_id || '');
   const [showGroupInput, setShowGroupInput] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const isEdit = !!initialNote.id;
 
   // Reset form when modal opens/closes or initialNote changes
@@ -22,9 +24,11 @@ export default function NoteEditorModal({ open, onClose, onSave, onDelete, group
   };
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
-      onDelete(initialNote.id);
-    }
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    onDelete(initialNote.id);
   };
 
   const handleCreateGroup = () => {
@@ -130,6 +134,16 @@ export default function NoteEditorModal({ open, onClose, onSave, onDelete, group
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        open={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={confirmDelete}
+        title="Delete Note"
+        message="Are you sure you want to delete this note? This action cannot be undone."
+        confirmText="Delete Note"
+        cancelText="Cancel"
+        confirmButtonStyle="danger"
+      />
     </div>
   );
 } 

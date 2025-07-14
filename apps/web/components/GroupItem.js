@@ -29,9 +29,13 @@ export default function GroupItem({ group, selectedGroupId, setSelectedGroupId, 
         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 120 }}>{group.name}</span>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
           <button style={{ fontSize: 13 }} title="Add note to this group" onClick={e => { e.stopPropagation(); onAddNote(group.id); }}>+ Note</button>
-          <button style={{ fontSize: 13 }} title="Add subgroup" onClick={handleAddSubgroup}>+ Subgroup</button>
-          <button style={{ fontSize: 13 }} title="Rename group" onClick={handleRenameGroup}>✏️</button>
-          <button style={{ fontSize: 13, color: '#f44336' }} title="Delete group" onClick={handleDeleteGroup}>🗑️</button>
+          {group.id !== 'ungrouped' && (
+            <>
+              <button style={{ fontSize: 13 }} title="Add subgroup" onClick={handleAddSubgroup}>+ Subgroup</button>
+              <button style={{ fontSize: 13 }} title="Rename group" onClick={handleRenameGroup}>✏️</button>
+              <button style={{ fontSize: 13, color: '#f44336' }} title="Delete group" onClick={handleDeleteGroup}>🗑️</button>
+            </>
+          )}
         </div>
       </div>
       {expanded && (

@@ -86,24 +86,26 @@ export default function NoteList({
                         >
                           + Note
                         </button>
-                        <button
-                          style={{
-                            background: '#22c55e',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: 6,
-                            padding: '0.5rem 1rem',
-                            fontSize: 14,
-                            cursor: 'pointer',
-                            fontWeight: 500
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onAddGroup(group.id);
-                          }}
-                        >
-                          + Subgroup
-                        </button>
+                        {group.id !== 'ungrouped' && (
+                          <button
+                            style={{
+                              background: '#22c55e',
+                              color: '#fff',
+                              border: 'none',
+                              borderRadius: 6,
+                              padding: '0.5rem 1rem',
+                              fontSize: 14,
+                              cursor: 'pointer',
+                              fontWeight: 500
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onAddGroup(group.id);
+                            }}
+                          >
+                            + Subgroup
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

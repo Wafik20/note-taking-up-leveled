@@ -3,6 +3,7 @@ import GroupTreeSidebar from './GroupTreeSidebar';
 import NoteList from './NoteList';
 import NoteEditorModal from './NoteEditorModal';
 import GroupModal from './GroupModal';
+import ConfirmationModal from './ConfirmationModal';
 import { useNotification } from '../context/NotificationContext';
 
 export default function NotesDashboard({ groups: initialGroups, notes: initialNotes }) {
@@ -14,6 +15,8 @@ export default function NotesDashboard({ groups: initialGroups, notes: initialNo
   const [noteEditorInitial, setNoteEditorInitial] = useState({});
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [groupModalInitial, setGroupModalInitial] = useState(null);
+  const [showDeleteGroupConfirm, setShowDeleteGroupConfirm] = useState(false);
+  const [groupToDelete, setGroupToDelete] = useState(null);
   const { showNotification } = useNotification();
   const [loadingGroups, setLoadingGroups] = useState(false);
   const [loadingNotes, setLoadingNotes] = useState(false);
@@ -158,16 +161,26 @@ export default function NotesDashboard({ groups: initialGroups, notes: initialNo
 
   // Delete group
   const handleDeleteGroup = async (groupId) => {
-    if (!window.confirm('Are you sure you want to delete this group and all its subgroups/notes?')) return;
+    // Prevent deletion of the "Ungrouped" group
+    if (groupId === 'ungrouped') {
+      showNotification('Cannot delete the "Ungrouped" group', 'error');
+      return;
+    }
+    setGroupToDelete(groupId);
+    setShowDeleteGroupConfirm(true);
+  };
+
+  const confirmDeleteGroup = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/groups/${groupId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/groups/${groupToDelete}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (!res.ok) throw new Error(await res.text());
       showNotification('Group deleted!', 'success');
       await fetchGroups();
+      await fetchNotes(); // Refresh notes to show newly ungrouped notes
     } catch (e) {
       showNotification('Error deleting group', 'error');
     }
@@ -260,6 +273,16 @@ export default function NotesDashboard({ groups: initialGroups, notes: initialNo
         onSave={handleGroupModalSave}
         groups={groups}
         initialGroup={groupModalInitial}
+      />
+      <ConfirmationModal
+        open={showDeleteGroupConfirm}
+        onClose={() => setShowDeleteGroupConfirm(false)}
+        onConfirm={confirmDeleteGroup}
+        title="Delete Group"
+        message="Are you sure you want to delete this group and all its subgroups? Notes will be moved to 'Ungrouped'."
+        confirmText="Delete Group"
+        cancelText="Cancel"
+        confirmButtonStyle="danger"
       />
     </div>
   );
