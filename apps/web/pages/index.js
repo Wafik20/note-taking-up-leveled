@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import InteractiveDemo from '../components/InteractiveDemo';
 
 function PublicHomePage() {
   return (
@@ -54,11 +55,21 @@ function PublicHomePage() {
           </div>
         </section>
 
-        {/* Demo Screenshot Section */}
+        {/* Interactive Demo Section */}
         <section className={styles.demoSection}>
           <h2 className={styles.demoTitle}>See it in Action</h2>
-          <div className={styles.demoImagePlaceholder}>
-            <span>Demo Screenshot / GIF Coming Soon</span>
+          <p style={{
+            textAlign: 'center',
+            color: '#666',
+            fontSize: '1.1rem',
+            marginBottom: '2rem',
+            maxWidth: '600px',
+            margin: '0 auto 2rem auto'
+          }}>
+            Try our live markdown editor below. Edit the content on the left and see the preview update in real-time!
+          </p>
+          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+            <InteractiveDemo />
           </div>
         </section>
       </main>
