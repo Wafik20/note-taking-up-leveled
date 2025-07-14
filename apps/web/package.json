@@ -7,10 +7,19 @@
   },
   "dependencies": {
     "date-fns": "^4.1.0",
+    "html2pdf.js": "^0.10.3",
+    "katex": "^0.16.22",
     "marked": "^16.0.0",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "rehype-katex": "^7.0.1",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "unified": "^11.0.5"
   },
   "engines": {
     "node": ">=18"
