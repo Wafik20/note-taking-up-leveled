@@ -1,10 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/router';
 import styles from '../../styles/Home.module.css';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useNotification } from '../../context/NotificationContext';
-import { marked } from 'marked';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import remarkRehype from 'remark-rehype';
+import rehypeKatex from 'rehype-katex';
+import rehypeStringify from 'rehype-stringify';
+import 'katex/dist/katex.min.css';
+import html2pdf from 'html2pdf.js';
 
 export default function NotePage() {
   const { user } = useAuth();
@@ -20,23 +28,23 @@ export default function NotePage() {
   const [saveStatus, setSaveStatus] = useState(''); // '', 'Saving...', 'Saved'
   const saveTimeout = useRef(null);
 
-  // Load MathJax with config for $...$ and $$...$$
-  useEffect(() => {
-    if (!window.MathJax) {
-      // Add MathJax config
-      const configScript = document.createElement('script');
-      configScript.type = 'text/javascript';
-      configScript.id = 'mathjax-config';
-      configScript.text = `window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']]}};`;
-      document.head.appendChild(configScript);
-      // Add MathJax script
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.async = true;
-      script.id = 'mathjax-script';
-      document.head.appendChild(script);
+  // Memoized HTML rendering with KaTeX
+  const renderedHtml = useMemo(() => {
+    const toRender = mode === 'preview' ? savedContent : content;
+    try {
+      const file = unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkMath)
+        .use(remarkRehype)
+        .use(rehypeKatex)
+        .use(rehypeStringify)
+        .processSync(toRender || '');
+      return String(file);
+    } catch (e) {
+      return '<div style="color:red">Error rendering markdown</div>';
     }
-  }, []);
+  }, [content, savedContent, mode]);
 
   useEffect(() => {
     if (!user) {
@@ -138,22 +146,21 @@ export default function NotePage() {
     }, 0);
   };
 
-  // Render markdown and typeset math
-  useEffect(() => {
-    if (previewRef.current) {
-      const toRender = mode === 'preview' ? savedContent : content;
-      previewRef.current.innerHTML = marked.parse(toRender || '');
-      // Wait for MathJax to be ready, then typeset
-      function typeset() {
-        if (window.MathJax && window.MathJax.typesetPromise) {
-          window.MathJax.typesetPromise([previewRef.current]);
-        } else {
-          setTimeout(typeset, 200); // Retry until MathJax is ready
-        }
-      }
-      typeset();
-    }
-  }, [content, savedContent, mode]);
+  // Add export to pdf handler
+  const exportToPDF = () => {
+    const element = document.createElement('div');
+    element.style.padding = '2rem';
+    element.innerHTML = `<h1 style='font-size:2rem;margin-bottom:1.5rem;'>${note?.title || ''}</h1>` + renderedHtml;
+    html2pdf()
+      .set({
+        margin: 0.5,
+        filename: (note?.title ? note.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'note') + '.pdf',
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      })
+      .from(element)
+      .save();
+  };
 
   const hasUnsavedChanges = content !== savedContent;
 
@@ -242,6 +249,24 @@ export default function NotePage() {
             >
               Export to Markdown
             </button>
+            <button
+              style={{
+                background: '#6366f1',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.5rem 1.5rem',
+                fontWeight: 600,
+                fontSize: '1.05rem',
+                cursor: 'pointer',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
+                outline: 'none',
+                transition: 'background 0.18s, color 0.18s',
+              }}
+              onClick={exportToPDF}
+            >
+              Export to PDF
+            </button>
           </div>
           {mode === 'edit' ? (
             <>
@@ -252,14 +277,14 @@ export default function NotePage() {
                   onChange={e => setContent(e.target.value)}
                   placeholder="Write your markdown (with $math$) here..."
                 />
-                <div className={styles.markdownPreview} ref={previewRef} />
+                <div className={styles.markdownPreview} dangerouslySetInnerHTML={{ __html: renderedHtml }} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <span style={{ color: saving ? '#888' : '#22c55e', fontSize: 14 }}>{saveStatus}</span>
               </div>
             </>
           ) : (
-            <div className={styles.a4Preview} ref={previewRef} />
+            <div className={styles.a4Preview} dangerouslySetInnerHTML={{ __html: renderedHtml }} />
           )}
         </main>
       </div>
