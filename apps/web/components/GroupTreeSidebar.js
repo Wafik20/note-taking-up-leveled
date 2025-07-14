@@ -31,18 +31,18 @@ export default function GroupTreeSidebar({ groups, notes, selectedGroupId, setSe
         </div>
       ) : (
         tree.map(group => (
-          <GroupItem
-            key={group.id}
-            group={group}
-            selectedGroupId={selectedGroupId}
-            setSelectedGroupId={setSelectedGroupId}
-            setSelectedNoteId={setSelectedNoteId}
-            onAddNote={onAddNote}
-            onAddGroup={onAddGroup}
-            onRenameGroup={onRenameGroup}
-            onDeleteGroup={onDeleteGroup}
-            onNoteSelect={onNoteSelect}
-          />
+        <GroupItem
+          key={group.id}
+          group={group}
+          selectedGroupId={selectedGroupId}
+          setSelectedGroupId={setSelectedGroupId}
+          setSelectedNoteId={setSelectedNoteId}
+          onAddNote={onAddNote}
+          onAddGroup={onAddGroup}
+          onRenameGroup={onRenameGroup}
+          onDeleteGroup={onDeleteGroup}
+          onNoteSelect={onNoteSelect}
+        />
         ))
       )}
     </aside>

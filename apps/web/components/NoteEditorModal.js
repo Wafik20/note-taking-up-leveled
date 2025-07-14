@@ -28,7 +28,7 @@ export default function NoteEditorModal({ open, onClose, onSave, onDelete, group
   };
 
   const confirmDelete = () => {
-    onDelete(initialNote.id);
+      onDelete(initialNote.id);
   };
 
   const handleCreateGroup = () => {

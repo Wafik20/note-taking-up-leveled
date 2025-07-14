@@ -206,7 +206,7 @@ export default function NoteList({
             <div>
               <h3 style={{ color: '#666', fontSize: 16, marginBottom: '1rem' }}>Notes:</h3>
               {notes.map(note => (
-                <NoteItem key={note.id} note={note} setSelectedNoteId={setSelectedNoteId} onNoteSelect={onNoteSelect} />
+          <NoteItem key={note.id} note={note} setSelectedNoteId={setSelectedNoteId} onNoteSelect={onNoteSelect} />
               ))}
             </div>
           )}

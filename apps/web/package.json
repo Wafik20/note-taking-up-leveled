@@ -6,7 +6,6 @@
     "start": "dotenv -e ../../.env -- next start"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.50.5",
     "date-fns": "^4.1.0",
     "marked": "^16.0.0",
     "next": "latest",

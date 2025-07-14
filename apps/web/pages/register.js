@@ -7,6 +7,7 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [confirmationSent, setConfirmationSent] = useState(false);
   const { signUp } = useAuth();
   const router = useRouter();
 
@@ -14,13 +15,42 @@ export default function Register() {
     e.preventDefault();
     setError(null);
     try {
-      const { error } = await signUp({ email, password });
-      if (error) throw error;
-      router.push('/notes');
+      await signUp({ email, password }); // No destructuring { error }
+      setConfirmationSent(true);
     } catch (error) {
       setError(error.message);
     }
   };
+
+  if (confirmationSent) {
+    return (
+      <div className={styles.authPageContainer}>
+        <div className={styles.authCard}>
+          <h1 className={styles.authTitle}>Check your email</h1>
+          <p style={{ color: '#333', fontSize: '1.1rem', margin: '1.5rem 0' }}>
+            A confirmation email has been sent to <b>{email}</b>.<br />
+            Please check your inbox and follow the link to verify your account.
+          </p>
+          <button
+            style={{
+              background: 'var(--primary)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              padding: '0.7rem 2rem',
+              fontWeight: 600,
+              fontSize: 16,
+              cursor: 'pointer',
+              marginTop: 16
+            }}
+            onClick={() => router.push('/login')}
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.authPageContainer}>
