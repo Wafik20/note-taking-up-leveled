@@ -16,6 +16,9 @@ export default function NotePage() {
   const { showNotification } = useNotification();
   const previewRef = useRef(null);
   const [mode, setMode] = useState('edit'); // 'edit' or 'preview'
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(''); // '', 'Saving...', 'Saved'
+  const saveTimeout = useRef(null);
 
   // Load MathJax with config for $...$ and $$...$$
   useEffect(() => {
@@ -46,6 +49,24 @@ export default function NotePage() {
       fetchNote();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (content !== savedContent) {
+      setSaveStatus('Saving...');
+      setSaving(true);
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+      saveTimeout.current = setTimeout(async () => {
+        await saveNote();
+        setSaving(false);
+        setSaveStatus('Saved');
+        setTimeout(() => setSaveStatus(''), 1200);
+      }, 1000);
+    }
+    // Cleanup on unmount
+    return () => {
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    };
+  }, [content]);
 
   const fetchNote = async () => {
     const token = localStorage.getItem('token');
@@ -80,7 +101,6 @@ export default function NotePage() {
     });
 
     if (response.ok) {
-      showNotification('Note saved!', 'success');
       setSavedContent(content);
     } else {
       console.error('Error updating note:', await response.text());
@@ -183,8 +203,8 @@ export default function NotePage() {
                 />
                 <div className={styles.markdownPreview} ref={previewRef} />
               </div>
-              <div className={styles.buttonGroup}>
-                <button onClick={saveNote} disabled={!hasUnsavedChanges}>Save</button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <span style={{ color: saving ? '#888' : '#22c55e', fontSize: 14 }}>{saveStatus}</span>
                 <button onClick={deleteNote}>Delete</button>
               </div>
             </>
