@@ -12,7 +12,6 @@ import remarkRehype from 'remark-rehype';
 import rehypeKatex from 'rehype-katex';
 import rehypeStringify from 'rehype-stringify';
 import 'katex/dist/katex.min.css';
-import html2pdf from 'html2pdf.js';
 
 export default function NotePage() {
   const { user } = useAuth();
@@ -146,8 +145,10 @@ export default function NotePage() {
     }, 0);
   };
 
-  // Add export to pdf handler
-  const exportToPDF = () => {
+  // Add export to pdf handler (client-side only)
+  const exportToPDF = async () => {
+    if (typeof window === 'undefined') return; // Only run in browser
+    const html2pdf = (await import('html2pdf.js')).default;
     const element = document.createElement('div');
     element.style.padding = '2rem';
     element.innerHTML = `<h1 style='font-size:2rem;margin-bottom:1.5rem;'>${note?.title || ''}</h1>` + renderedHtml;
